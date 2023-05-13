@@ -47,14 +47,16 @@ from huggingface_hub import HfApi, HfFolder
 
 # Main function
 def main():
-    # token = getpass.getpass("Hugging Face token: ")
-    # if not token:
-    #     print("Hugging Face token not found. Please set the HUGGINGFACE_TOKEN environment variable.")
-    #     return
+    token = getpass.getpass("Hugging Face token: ")
+    if not token:
+        print("Hugging Face token not found. Please set the HUGGINGFACE_TOKEN environment variable.")
+        return
+
+    os.environ['HUGGINGFACE_TOKEN'] = token
 
     common_voice = DatasetDict()
-    common_voice["train"] = load_dataset("mozilla-foundation/common_voice_13_0", "mn", split="train+validation", use_auth_token=False)
-    common_voice["test"] = load_dataset("mozilla-foundation/common_voice_13_0", "mn", split="test", use_auth_token=False)
+    common_voice["train"] = load_dataset("mozilla-foundation/common_voice_13_0", "mn", split="train+validation", use_auth_token=True)
+    common_voice["test"] = load_dataset("mozilla-foundation/common_voice_13_0", "mn", split="test", use_auth_token=True)
     common_voice = common_voice.remove_columns(["accent", "age", "client_id", "down_votes", "gender", "locale", "path", "segment", "up_votes"])
     # ... rest of your code ...
     feature_extractor = WhisperFeatureExtractor.from_pretrained("openai/whisper-large-v2")
@@ -168,7 +170,7 @@ def main():
         load_best_model_at_end=True,
         metric_for_best_model="wer",
         greater_is_better=False,
-        push_to_hub=False,
+        push_to_hub=True,
     )
 
     trainer = Seq2SeqTrainer(
