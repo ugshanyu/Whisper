@@ -1,0 +1,10 @@
+datasets
+transformers
+librosa
+evaluate
+jiwer
+gradio
+tensorboard
+accelerate
+huggingface_hub
+torch
