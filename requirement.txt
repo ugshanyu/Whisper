@@ -1,10 +1,10 @@
-datasets
 transformers
+huggingface_hub
+datasets
 librosa
 evaluate
 jiwer
 gradio
 tensorboard
 accelerate
-huggingface_hub
 torch

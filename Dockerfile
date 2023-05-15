@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirement.txt
 EXPOSE 80
 
 # Define environment variable
-ENV NAME World
+ENV NAME What
 
 # Run your python file when the container launches
 CMD ["python", "-u", "train.py"]

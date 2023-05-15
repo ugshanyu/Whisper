@@ -4,38 +4,6 @@ import subprocess
 import sys
 import getpass
 
-
-# # Function to install packages
-# def install(package):
-#     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
-# # Function to handle Hugging Face login
-# def huggingface_login():
-#     api = HfApi()
-
-#     # Ask user for username and password
-#     username = input("Hugging Face username: ")
-#     password = getpass.getpass("Hugging Face password: ")
-
-#     # Get token
-#     token = api.login(username, password)
-
-#     # Save token to Hugging Face folder
-#     folder = HfFolder()
-#     folder.save_token(token)
-
-# # Install packages
-# install("datasets")
-# install("git+https://github.com/huggingface/transformers")
-# install("librosa")
-# install("evaluate")
-# install("jiwer")
-# install("gradio")
-# install("tensorboard")
-# install("--upgrade transformers")
-# install("--upgrade accelerate")
-
-# Import libraries
 from datasets import load_dataset, DatasetDict
 from transformers import WhisperFeatureExtractor, WhisperTokenizer, WhisperProcessor, WhisperForConditionalGeneration, Seq2SeqTrainingArguments, Seq2SeqTrainer
 from datasets import Audio
@@ -44,23 +12,20 @@ from typing import Any, Dict, List, Union
 import torch
 import evaluate
 from huggingface_hub import HfApi, HfFolder
+from huggingface_hub import login
 
 # Main function
 def main():
-    token = getpass.getpass("Hugging Face token: ")
-    if not token:
-        print("Hugging Face token not found. Please set the HUGGINGFACE_TOKEN environment variable.")
-        return
-
-    os.environ['HUGGINGFACE_TOKEN'] = token
-
+    print(f"HUGGINGFACE_TOKEN: {os.environ.get('HUGGINGFACE_TOKEN')}")
+    token = os.getenv("HUGGINGFACE_TOKEN")
+    login(token)
     common_voice = DatasetDict()
     common_voice["train"] = load_dataset("mozilla-foundation/common_voice_13_0", "mn", split="train+validation", use_auth_token=True)
     common_voice["test"] = load_dataset("mozilla-foundation/common_voice_13_0", "mn", split="test", use_auth_token=True)
     common_voice = common_voice.remove_columns(["accent", "age", "client_id", "down_votes", "gender", "locale", "path", "segment", "up_votes"])
     # ... rest of your code ...
-    feature_extractor = WhisperFeatureExtractor.from_pretrained("openai/whisper-large-v2")
-    tokenizer = WhisperTokenizer.from_pretrained("openai/whisper-large-v2", language="Mongolian", task="transcribe")
+    feature_extractor = WhisperFeatureExtractor.from_pretrained("openai/whisper-tiny")
+    tokenizer = WhisperTokenizer.from_pretrained("openai/whisper-tiny", language="Mongolian", task="transcribe")
 
 
     input_str = common_voice["train"][0]["sentence"]
@@ -73,7 +38,7 @@ def main():
     print(f"Decoded w/out special: {decoded_str}")
     print(f"Are equal:             {input_str == decoded_str}")
 
-    processor = WhisperProcessor.from_pretrained("openai/whisper-large-v2", language="Mongolian", task="transcribe")
+    processor = WhisperProcessor.from_pretrained("openai/whisper-tiny", language="Mongolian", task="transcribe")
     print(common_voice["train"][0])
     common_voice = common_voice.cast_column("audio", Audio(sampling_rate=16000))
     print(common_voice["train"][0])
@@ -143,7 +108,7 @@ def main():
         return {"wer": wer}
 
 
-    model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v2")
+    model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-tiny")
 
 
     model.config.forced_decoder_ids = None
