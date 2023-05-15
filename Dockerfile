@@ -1,5 +1,8 @@
-# Use an official Python runtime as a parent image
-FROM python:3.8-slim-buster
+# Use an official Python runtime with CUDA as a parent image
+FROM nvidia/cuda:11.2.2-base-ubuntu20.04
+
+# Install Python
+RUN apt-get update && apt-get install -y python3.8 python3-pip
 
 # Set the working directory in the container to /app
 WORKDIR /app
@@ -8,7 +11,7 @@ WORKDIR /app
 ADD . /app
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirement.txt
+RUN pip3 install --no-cache-dir -r requirement.txt
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
@@ -17,4 +20,4 @@ EXPOSE 80
 ENV NAME What
 
 # Run your python file when the container launches
-CMD ["python", "-u", "train.py"]
+CMD ["python3", "-u", "train.py"]
