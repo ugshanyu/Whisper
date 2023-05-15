@@ -8,3 +8,4 @@ gradio
 tensorboard
 accelerate
 torch
+soundfile
