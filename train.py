@@ -28,15 +28,15 @@ def main():
     tokenizer = WhisperTokenizer.from_pretrained("openai/whisper-tiny", language="Mongolian", task="transcribe")
 
 
-    input_str = common_voice["train"][0]["sentence"]
-    labels = tokenizer(input_str).input_ids
+    # input_str = common_voice["train"][0]["sentence"]
+    # labels = tokenizer(input_str).input_ids
     decoded_with_special = tokenizer.decode(labels, skip_special_tokens=False)
     decoded_str = tokenizer.decode(labels, skip_special_tokens=True)
 
-    print(f"Input:                 {input_str}")
+    # print(f"Input:                 {input_str}")
     print(f"Decoded w/ special:    {decoded_with_special}")
     print(f"Decoded w/out special: {decoded_str}")
-    print(f"Are equal:             {input_str == decoded_str}")
+    # print(f"Are equal:             {input_str == decoded_str}")
 
     processor = WhisperProcessor.from_pretrained("openai/whisper-tiny", language="Mongolian", task="transcribe")
     print(common_voice["train"][0])
